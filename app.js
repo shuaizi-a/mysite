@@ -5,12 +5,15 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-// 引入路由
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+// 默认读取项目根目录下的 .env 环境变量文件
+require('dotenv').config();
 
 // 引入数据库连接
 require('./dao/dbConnect');
+
+// 引入路由
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
 
 // 创建服务器实例
 var app = express();

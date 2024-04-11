@@ -2,8 +2,9 @@
 const { Sequelize } = require('sequelize');
 
 // 创建数据库连接
-const sequelize = new Sequelize('数据库名称', '用户名', '密码', {
-  host: 'localhost',
+const { DB_NAME, DB_USER, DB_PASS, DB_HOST } = process.env;
+const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
+  host: DB_HOST,
   dialect: 'mysql',
   logging: false
 });
