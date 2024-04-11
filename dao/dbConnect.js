@@ -17,3 +17,6 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
     console.error('数据库连接成功失败', error);
   }
 })();
+
+// 向外暴露这个连接实例
+module.exports = sequelize;
