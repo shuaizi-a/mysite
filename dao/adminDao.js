@@ -11,3 +11,12 @@ module.exports.loginDao = async function (loginInfo) {
     }
   });
 };
+
+// 更新管理员
+module.exports.updateAdminDao = async function (newAccountInfo) {
+  return await adminModel.update(newAccountInfo, {
+    where: {
+      loginId: newAccountInfo.loginId
+    }
+  });
+};
