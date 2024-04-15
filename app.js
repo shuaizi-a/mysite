@@ -7,11 +7,10 @@ var logger = require('morgan');
 var { expressjwt: jwt } = require('express-jwt');
 const md5 = require('md5');
 const session = require('express-session');
-const { ForbiddenError, ServiceError, UnknownError } = require('./utils/errors');
+const { ForbiddenError, ServiceError } = require('./utils/errors');
 
 // 默认读取项目根目录下的 .env 环境变量文件
 require('dotenv').config();
-// 捕获异步报错
 require('express-async-errors');
 // 引入数据库连接
 require('./dao/db');
@@ -20,6 +19,12 @@ require('./dao/db');
 var adminRouter = require('./routes/admin');
 var bannerRouter = require('./routes/banner');
 var uploadRouter = require('./routes/upload');
+var blogTypeRouter = require('./routes/blogType');
+var blogRouter = require('./routes/blog');
+var demoRouter = require('./routes/demo');
+var messageRouter = require('./routes/message');
+var aboutRouter = require('./routes/about');
+var settingRouter = require('./routes/setting');
 var captchaRouter = require('./routes/captcha');
 
 // 创建服务器实例
@@ -49,7 +54,16 @@ app.use(
     // 需要排除的 token 验证的路由
     path: [
       { url: '/api/admin/login', methods: ['POST'] },
-      { url: '/res/captcha', methods: ['GET'] }
+      { url: '/res/captcha', methods: ['GET'] },
+      { url: '/api/banner', methods: ['GET'] },
+      { url: '/api/blogtype', methods: ['GET'] },
+      { url: '/api/blog', methods: ['GET'] },
+      { url: /\/api\/blog\/\d/, methods: ['GET'] },
+      { url: '/api/project', methods: ['GET'] },
+      { url: '/api/message', methods: ['GET', 'POST'] },
+      { url: '/api/comment', methods: ['GET', 'POST'] },
+      { url: '/api/about', methods: ['GET'] },
+      { url: '/api/setting', methods: ['GET'] }
     ]
   })
 );
@@ -58,6 +72,13 @@ app.use(
 app.use('/api/admin', adminRouter);
 app.use('/api/banner', bannerRouter);
 app.use('/api/upload', uploadRouter);
+app.use('/api/blogtype', blogTypeRouter);
+app.use('/api/blog', blogRouter);
+app.use('/api/project', demoRouter);
+app.use('/api/message', messageRouter);
+app.use('/api/comment', messageRouter);
+app.use('/api/about', aboutRouter);
+app.use('/api/setting', settingRouter);
 app.use('/res/captcha', captchaRouter);
 
 // catch 404 and forward to error handler

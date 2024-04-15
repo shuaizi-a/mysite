@@ -2,11 +2,27 @@
 const sequelize = require('./dbConnect'); // 数据库连接实例
 
 const adminModel = require('./model/adminModel'); // 数据模型
-const bannerModel = require('./model/bannerModel'); // 数据模型
+const bannerModel = require('./model/bannerModel');
+const blogTypeModel = require('./model/blogTypeModel');
+const blogModel = require('./model/blogModel');
+const demoModel = require('./model/demoModel');
+const messageModel = require('./model/messageModel');
+const aboutModel = require('./model/aboutModel');
+const settingModel = require('./model/settingModel');
 
 const md5 = require('md5');
 
 (async function () {
+  // 定义模型之间的关联关系
+
+  // 博客和博客分类之间的关联
+  blogTypeModel.hasMany(blogModel, { foreignKey: 'categoryId', targetKey: 'id' });
+  blogModel.belongsTo(blogTypeModel, { foreignKey: 'categoryId', targetKey: 'id', as: 'category' });
+
+  // 博客和博客评论之间存在关联关系
+  blogModel.hasMany(messageModel, { foreignKey: 'blogId', target: 'id' });
+  messageModel.belongsTo(blogModel, { foreignKey: 'blogId', target: 'id', as: 'blog' });
+
   // 将数据模型和表进行同步
   await sequelize.sync({
     alter: true
@@ -49,6 +65,36 @@ const md5 = require('md5');
       }
     ]);
     console.log('初始化首页标语数据...');
+  }
+
+  // 进行一些数据初始化
+  const aboutCount = await aboutModel.count(); // 首先进行查询看有没有数据
+  if (!aboutCount) {
+    // 如果没有数据就进行初始化
+    await aboutModel.create({
+      url: 'https://oss.duyiedu.com/demo-summary/网页简历/index.html'
+    });
+    console.log('初始化关于我数据...');
+  }
+
+  // 全局设置数据初始化
+  const settingCount = await settingModel.count(); // 首先进行查询看有没有数据
+  if (!settingCount) {
+    // 如果没有数据就进行初始化
+    await settingModel.create({
+      avatar: '/static/images/avatar.jpeg',
+      siteTitle: '我的个人空间',
+      github: '',
+      qq: '77367582',
+      qqQrCode: '/static/images/qq.jpg',
+      weixin: 'kkszhh',
+      weixinQrCode: '/static/images/wx.jpg',
+      mail: '77367582@qq.com',
+      icp: '8888888',
+      githubName: 'shuaizi-a',
+      favicon: '/static/images/tx.jpg'
+    });
+    console.log('初始化全局设置数据...');
   }
 
   console.log('数据库数据已经准备完毕....');
